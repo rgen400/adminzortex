@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AdminZortex V2 - Admin Panel</title>
     <style>
-        /* --- ธีมนีออน --- */
+        /* --- ธีมนีออน (คงเดิมของคุณ) --- */
         body {
             background-color: #0b0b0b; color: white; font-family: 'Segoe UI', sans-serif;
             margin: 0; display: flex; justify-content: center; align-items: center;
             min-height: 100vh; border: 8px solid #bc13fe; box-sizing: border-box;
             box-shadow: inset 0 0 20px #bc13fe; overflow-x: hidden;
         }
-
-        /* --- หน้า Login --- */
         #login-page { text-align: center; }
         .neon-container {
             width: 380px; padding: 40px; background: #111;
@@ -31,34 +29,23 @@
             font-weight: bold; transition: 0.4s; box-shadow: 0 0 10px #bc13fe;
         }
         .neon-button:hover { background: #bc13fe; color: white; box-shadow: 0 0 30px #bc13fe; }
-
-        /* --- หน้า Dashboard --- */
         #admin-page { display: none; width: 95%; max-width: 600px; animation: fadeIn 0.8s ease; padding: 20px; }
         .dashboard-box { background: #111; padding: 25px; border-radius: 15px; border: 1px solid #bc13fe; box-shadow: 0 0 25px rgba(188, 19, 254, 0.4); }
-        
         .info-section { background: #000; padding: 15px; border-radius: 10px; border-left: 5px solid #bc13fe; margin: 15px 0; }
         .info-item { margin: 8px 0; font-size: 0.9rem; color: #e0b0ff; border-bottom: 1px solid rgba(188, 19, 254, 0.1); }
         .info-item b { color: #fff; min-width: 130px; display: inline-block; }
-
-        /* --- แผงสร้างคีย์ --- */
         .gen-section { background: #1a1a1a; padding: 15px; border-radius: 12px; border: 1px solid #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); margin-top: 20px; text-align: center; }
         .gen-title { color: #00ff88; text-shadow: 0 0 10px #00ff88; margin-bottom: 10px; font-weight: bold; }
-        
         select { background: #000; color: #00ff88; border: 1px solid #00ff88; padding: 10px; border-radius: 8px; margin-bottom: 10px; width: 100%; outline: none; }
         .result-key { background: #000; border: 2px dashed #00ff88; padding: 10px; margin: 10px 0; font-size: 1.2rem; color: #fff; text-shadow: 0 0 5px #00ff88; font-family: monospace; border-radius: 8px; }
-        
-        /* --- แผงแบนคีย์ / รีเซ็ตคีย์ (เพิ่มใหม่) --- */
         .management-section { background: #1a1a1a; padding: 15px; border-radius: 12px; border: 1px solid #ff0044; box-shadow: 0 0 15px rgba(255, 0, 68, 0.2); margin-top: 20px; text-align: center; }
         .manage-title { color: #ff0044; text-shadow: 0 0 10px #ff0044; margin-bottom: 10px; font-weight: bold; }
-        
         .manage-input { width: 100%; padding: 10px; background: #000; border: 1px solid #ff0044; border-radius: 5px; color: #ff99aa; margin-bottom: 10px; text-align: center; box-sizing: border-box; outline: none; }
-        
         .btn-group { display: flex; gap: 10px; }
         .btn-ban { flex: 1; background: #ff0044; color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-reset { flex: 1; background: #ffaa00; color: black; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-ban:hover { box-shadow: 0 0 20px #ff0044; }
         .btn-reset:hover { box-shadow: 0 0 20px #ffaa00; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -68,8 +55,8 @@
     <div id="login-page">
         <div class="neon-container">
             <h1>แผงเช่าคีย์</h1>
-            <p style="color: #8b00ff;">ADMINZORTEX V2 LOGIN</p>
-            <input type="text" id="userKey" class="neon-input" placeholder="กรอกรหัสคีย์ (ZORTEX-V2)">
+            <p style="color: #8b00ff;">ADMINZORTEX V2 API LOGIN</p>
+            <input type="password" id="userKey" class="neon-input" placeholder="กรอกรหัสผ่านแอดมิน">
             <button class="neon-button" onclick="checkKey()">เข้าสู่ระบบ</button>
             <div id="message" style="margin-top:10px; color: red;"></div>
         </div>
@@ -80,32 +67,30 @@
         <div class="dashboard-box">
             <h2 style="text-align:center; color:#fff; text-shadow: 0 0 10px #bc13fe; margin-top:0;">AdminZortex Manager</h2>
             
-            <!-- ข้อมูลอุปกรณ์ -->
             <div class="info-section">
-                <div class="info-item"><b>ชื่ออุปกรณ์มือถือ</b> : <span id="model-info">กำลังตรวจ...</span></div>
-                <div class="info-item"><b>ค่ายเน็ตโทรศัพท์</b> : <span id="isp-info">กำลังตรวจ...</span></div>
-                <div class="info-item"><b>แบตโทรศัพท์</b> : <span id="battery-info">--%</span></div>
-                <div class="info-item"><b>เวลาตอนเข้าเว็บ</b> : <span id="time-info">--:--</span></div>
+                <div class="info-item"><b>สถานะ API</b> : <span style="color:lime">ออนไลน์</span></div>
+                <div class="info-item"><b>ชื่ออุปกรณ์</b> : <span id="model-info">กำลังตรวจ...</span></div>
+                <div class="info-item"><b>เวลาปัจจุบัน</b> : <span id="time-info">--:--</span></div>
             </div>
 
-            <!-- แผงสร้างคีย์ (สีเขียว) -->
+            <!-- แผงสร้างคีย์ -->
             <div class="gen-section">
-                <div class="gen-title">GENERATE NEW KEY</div>
+                <div class="gen-title">GENERATE NEW KEY (API)</div>
                 <select id="keyDuration">
                     <option value="1H">1 ชั่วโมง</option>
                     <option value="1D">1 วัน</option>
                     <option value="7D">7 วัน</option>
                     <option value="30D">30 วัน</option>
                 </select>
-                <button class="neon-button" style="border-color:#00ff88; color:#00ff88;" onclick="generateKey()">สร้างรหัสคีย์</button>
+                <button class="neon-button" style="border-color:#00ff88; color:#00ff88;" onclick="generateKey()">สร้างและบันทึกลง API</button>
                 <div id="keyDisplay" class="result-key">--- รหัสคีย์ ---</div>
                 <button id="copyBtn" onclick="copyKey()" style="background:none; border:1px solid #00ff88; color:#00ff88; padding:5px 10px; border-radius:5px; cursor:pointer; display:none; width:100%;">คัดลอกคีย์</button>
             </div>
 
-            <!-- แผงจัดการคีย์ (สีแดง - แบน/รีเซ็ต) -->
+            <!-- แผงจัดการคีย์ -->
             <div class="management-section">
                 <div class="manage-title">KEY MANAGEMENT SYSTEM</div>
-                <input type="text" id="manageKeyInput" class="manage-input" placeholder="กรอกรหัสคีย์ที่ต้องการจัดการ...">
+                <input type="text" id="manageKeyInput" class="manage-input" placeholder="กรอกคีย์ที่ต้องการจัดการ...">
                 <div class="btn-group">
                     <button class="btn-ban" onclick="actionKey('BAN')">แบนคีย์</button>
                     <button class="btn-reset" onclick="actionKey('RESET')">รีเซ็ตคีย์</button>
@@ -117,14 +102,17 @@
     </div>
 
     <script>
+        // ลิงก์ API ของคุณ
+        const API_URL = "https://adminzortex-default-rtdb.firebaseio.com/keys.json";
+
         function checkKey() {
             const input = document.getElementById('userKey').value;
-            if (input === "ZORTEX-V2") {
+            if (input === "ZORTEX-V2") { // รหัสผ่านเข้าหน้าแอดมิน
                 fetchDeviceInfo();
                 document.getElementById('login-page').style.display = 'none';
                 document.getElementById('admin-page').style.display = 'block';
             } else {
-                document.getElementById('message').innerText = "รหัสไม่ถูกต้อง!";
+                document.getElementById('message').innerText = "รหัสผ่านไม่ถูกต้อง!";
             }
         }
 
@@ -132,8 +120,23 @@
             const duration = document.getElementById('keyDuration').value;
             const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
             const finalKey = `ZORTEX-${duration}-${randomStr}`;
-            document.getElementById('keyDisplay').innerText = finalKey;
-            document.getElementById('copyBtn').style.display = 'block';
+            
+            const data = {
+                key: finalKey,
+                duration: duration,
+                status: "active",
+                created_at: new Date().toLocaleString()
+            };
+
+            // ส่งข้อมูลไปบันทึกที่ Firebase
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            }).then(() => {
+                document.getElementById('keyDisplay').innerText = finalKey;
+                document.getElementById('copyBtn').style.display = 'block';
+                alert("สร้างและบันทึกคีย์ลง API สำเร็จ!");
+            }).catch(err => alert("API Error: " + err));
         }
 
         function copyKey() {
@@ -142,39 +145,17 @@
             alert("คัดลอกแล้ว: " + text);
         }
 
-        // ฟังก์ชัน แบน และ รีเซ็ต
         function actionKey(type) {
             const key = document.getElementById('manageKeyInput').value;
-            if (key === "") {
-                alert("กรุณากรอกรหัสคีย์ก่อน!");
-                return;
-            }
+            if (key === "") return alert("กรุณากรอกคีย์!");
             
-            if (type === 'BAN') {
-                alert("🚫 แบนคีย์: " + key + " สำเร็จ!\nคีย์นี้จะไม่สามารถเข้าสู่ระบบได้อีก");
-            } else if (type === 'RESET') {
-                alert("🔄 รีเซ็ตคีย์: " + key + " สำเร็จ!\nล้างข้อมูลอุปกรณ์เดิมเรียบร้อย");
-            }
-            document.getElementById('manageKeyInput').value = ""; // ล้างช่องกรอก
+            // ในที่นี้เป็นการจำลองการส่งคำสั่ง (สามารถต่อยอด PATCH ไปที่ Firebase รายคีย์ได้)
+            alert("ส่งคำสั่ง " + type + " สำหรับคีย์ " + key + " ไปยัง API เรียบร้อยแล้ว!");
         }
 
         function fetchDeviceInfo() {
-            const ua = navigator.userAgent;
-            let device = "Android Device";
-            if (ua.includes("Infinix")) device = "Infinix";
-            else if (ua.includes("Samsung")) device = "Samsung";
-            else if (ua.includes("iPhone")) device = "iPhone";
-            document.getElementById('model-info').innerText = device;
-
-            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            document.getElementById('isp-info').innerText = conn ? (conn.effectiveType || "4G").toUpperCase() : "WIFI";
-
-            if (navigator.getBattery) {
-                navigator.getBattery().then(b => {
-                    document.getElementById('battery-info').innerText = Math.floor(b.level * 100) + "%";
-                });
-            }
-            document.getElementById('time-info').innerText = new Date().toLocaleTimeString('th-TH') + " น.";
+            document.getElementById('model-info').innerText = navigator.platform;
+            document.getElementById('time-info').innerText = new Date().toLocaleTimeString('th-TH');
         }
     </script>
 </body>

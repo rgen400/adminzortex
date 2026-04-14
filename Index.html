@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdminZortex V2 - HWID System</title>
+    <style>
+        /* --- ธีมนีออน --- */
+        body {
+            background-color: #0b0b0b; color: white; font-family: 'Segoe UI', sans-serif;
+            margin: 0; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; border: 8px solid #bc13fe; box-sizing: border-box;
+            box-shadow: inset 0 0 20px #bc13fe; overflow-x: hidden;
+        }
+        #login-page { text-align: center; }
+        .neon-container {
+            width: 380px; padding: 40px; background: #111;
+            border: 2px solid #bc13fe; border-radius: 15px;
+            box-shadow: 0 0 25px #8b00ff;
+        }
+        .neon-input {
+            width: 100%; padding: 15px; margin: 20px 0; background: #000;
+            border: 2px solid #bc13fe; border-radius: 10px; color: #e0b0ff;
+            text-shadow: 0 0 8px #bc13fe; text-align: center; outline: none;
+        }
+        .neon-button {
+            width: 100%; padding: 12px; background: transparent; color: #bc13fe;
+            border: 2px solid #bc13fe; border-radius: 50px; cursor: pointer;
+            font-weight: bold; transition: 0.4s; box-shadow: 0 0 10px #bc13fe;
+        }
+        .neon-button:hover { background: #bc13fe; color: white; box-shadow: 0 0 30px #bc13fe; }
+        
+        #admin-page { display: none; width: 95%; max-width: 600px; animation: fadeIn 0.8s ease; padding: 20px; margin: 20px auto; }
+        .dashboard-box { background: #111; padding: 25px; border-radius: 15px; border: 1px solid #bc13fe; box-shadow: 0 0 25px rgba(188, 19, 254, 0.4); }
+        
+        .info-section { background: #000; padding: 15px; border-radius: 10px; border-left: 5px solid #bc13fe; margin: 15px 0; }
+        .info-item { margin: 8px 0; font-size: 0.85rem; color: #e0b0ff; border-bottom: 1px solid rgba(188, 19, 254, 0.1); }
+        .info-item b { color: #fff; min-width: 110px; display: inline-block; }
+
+        .gen-section { background: #1a1a1a; padding: 15px; border-radius: 12px; border: 1px solid #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); margin-top: 20px; text-align: center; }
+        .gen-title { color: #00ff88; text-shadow: 0 0 10px #00ff88; margin-bottom: 10px; font-weight: bold; }
+        select { background: #000; color: #00ff88; border: 1px solid #00ff88; padding: 10px; border-radius: 8px; margin-bottom: 10px; width: 100%; outline: none; }
+        .result-key { background: #000; border: 2px dashed #00ff88; padding: 10px; margin: 10px 0; font-size: 1.2rem; color: #fff; text-shadow: 0 0 5px #00ff88; font-family: monospace; border-radius: 8px; }
+
+        .management-section { background: #1a1a1a; padding: 15px; border-radius: 12px; border: 1px solid #ff0044; box-shadow: 0 0 15px rgba(255, 0, 68, 0.2); margin-top: 20px; text-align: center; }
+        .manage-title { color: #ff0044; text-shadow: 0 0 10px #ff0044; margin-bottom: 10px; font-weight: bold; }
+        .manage-input { width: 100%; padding: 10px; background: #000; border: 1px solid #ff0044; border-radius: 5px; color: #ff99aa; margin-bottom: 10px; text-align: center; box-sizing: border-box; outline: none; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn-ban { flex: 1; background: #ff0044; color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-reset { flex: 1; background: #ffaa00; color: black; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-ban:hover { box-shadow: 0 0 20px #ff0044; }
+        .btn-reset:hover { box-shadow: 0 0 20px #ffaa00; }
+
+        .key-list-section { background: #111; margin-top: 20px; border-radius: 12px; border: 1px solid #bc13fe; padding: 15px; max-height: 400px; overflow-y: auto; }
+        .key-list-title { color: #bc13fe; font-weight: bold; text-align: center; margin-bottom: 10px; }
+        .key-card { background: #000; border: 1px solid #333; padding: 12px; border-radius: 8px; margin-bottom: 8px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
+        .key-card:hover { border-color: #bc13fe; background: #0a0a0a; }
+        .hwid-tag { color: #ff00ff; font-family: monospace; font-size: 0.7rem; word-break: break-all; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="login-page">
+        <div class="neon-container">
+            <h1>แผงเช่าคีย์</h1>
+            <p style="color: #8b00ff;">ADMINZORTEX V2 REAL-TIME API</p>
+            <input type="password" id="userKey" class="neon-input" placeholder="กรอกรหัสผ่านแอดมิน">
+            <button class="neon-button" onclick="checkKey()">เข้าสู่ระบบ</button>
+            <div id="message" style="margin-top:10px; color: red;"></div>
+        </div>
+    </div>
+
+    <div id="admin-page">
+        <div class="dashboard-box">
+            <h2 style="text-align:center; color:#fff; text-shadow: 0 0 10px #bc13fe; margin-top:0;">Management System</h2>
+            
+            <div class="info-section">
+                <div class="info-item"><b>สถานะระบบ</b> : <span style="color:lime">ออนไลน์ (ใช้งานได้จริง)</span></div>
+                <div class="info-item"><b>เวลาปัจจุบัน</b> : <span id="time-info">--:--</span></div>
+            </div>
+
+            <div class="gen-section">
+                <div class="gen-title">สร้างคีย์ใหม่</div>
+                <select id="keyDuration">
+                    <option value="1H">1 ชั่วโมง</option>
+                    <option value="1D">1 วัน</option>
+                    <option value="7D">7 วัน</option>
+                    <option value="30D">30 วัน</option>
+                </select>
+                <button class="neon-button" style="border-color:#00ff88; color:#00ff88;" onclick="generateKey()">สร้างและบันทึกคีย์</button>
+                <div id="keyDisplay" class="result-key">--- รหัสคีย์ ---</div>
+                <button id="copyBtn" onclick="copyKey()" style="background:none; border:1px solid #00ff88; color:#00ff88; padding:5px 10px; border-radius:5px; cursor:pointer; display:none; width:100%;">คัดลอกคีย์</button>
+            </div>
+
+            <div class="management-section">
+                <div class="manage-title">จัดการคีย์ (แบน/รีเซ็ต)</div>
+                <input type="text" id="manageKeyInput" class="manage-input" placeholder="เลือกคีย์จากด้านล่าง...">
+                <div class="btn-group">
+                    <button class="btn-ban" onclick="actionKey('BAN')">แบนคีย์ (ลบทิ้ง)</button>
+                    <button class="btn-reset" onclick="actionKey('RESET')">รีเซ็ตคีย์ (ปลดล็อค HWID)</button>
+                </div>
+            </div>
+
+            <div class="key-list-section">
+                <div class="key-list-title">รายการคีย์ในระบบ (คลิกเพื่อเลือก)</div>
+                <div id="keyList">กำลังโหลด...</div>
+            </div>
+
+            <button class="neon-button" style="margin-top: 25px; border-color: #555; color: #888;" onclick="location.reload()">ออกจากระบบ</button>
+        </div>
+    </div>
+
+    <script>
+        // ลิงก์ API หลัก
+        const API_BASE = "https://adminzortex-default-rtdb.firebaseio.com/keys";
+
+        function checkKey() {
+            if (document.getElementById('userKey').value === "ZORTEX-V2") {
+                fetchKeys();
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('admin-page').style.display = 'block';
+                setInterval(fetchKeys, 5000); 
+            } else { alert("รหัสผิด!"); }
+        }
+
+        // --- 1. สร้างคีย์และบันทึกจริง ---
+        function generateKey() {
+            const duration = document.getElementById('keyDuration').value;
+            const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const finalKey = `ZORTEX-${duration}-${randomStr}`;
+            
+            let expDate = new Date();
+            if(duration === "1H") expDate.setHours(expDate.getHours() + 1);
+            else if(duration === "1D") expDate.setDate(expDate.getDate() + 1);
+            else if(duration === "7D") expDate.setDate(expDate.getDate() + 7);
+            else if(duration === "30D") expDate.setDate(expDate.getDate() + 30);
+
+            const data = {
+                key: finalKey,
+                expiry: expDate.getTime(),
+                hwid: "none",
+                status: "unused"
+            };
+
+            // ใช้ .json ต่อท้าย และเมธอด PUT เพื่อสร้าง Node ตามชื่อคีย์
+            fetch(`${API_BASE}/${finalKey}.json`, {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            }).then(() => {
+                document.getElementById('keyDisplay').innerText = finalKey;
+                document.getElementById('copyBtn').style.display = 'block';
+                fetchKeys();
+                alert("บันทึกคีย์ลงระบบเรียบร้อย!");
+            });
+        }
+
+        // --- 2. ดึงข้อมูลคีย์มาแสดง ---
+        function fetchKeys() {
+            fetch(`${API_BASE}.json`)
+            .then(res => res.json())
+            .then(data => {
+                const listDiv = document.getElementById('keyList');
+                listDiv.innerHTML = "";
+                if (!data) return listDiv.innerHTML = "<center>ไม่มีคีย์ในฐานข้อมูล</center>";
+
+                Object.keys(data).forEach(id => {
+                    const k = data[id];
+                    listDiv.innerHTML += `
+                        <div class="key-card" onclick="document.getElementById('manageKeyInput').value='${k.key}'">
+                            <b>${k.key}</b><br>
+                            HWID: <span class="hwid-tag">${k.hwid}</span>
+                        </div>`;
+                });
+            });
+            document.getElementById('time-info').innerText = new Date().toLocaleTimeString();
+        }
+
+        // --- 3. ระบบแบนและรีเซ็ตที่ใช้งานได้จริง ---
+        function actionKey(type) {
+            const key = document.getElementById('manageKeyInput').value;
+            if (!key) return alert("กรุณาเลือกคีย์ที่ต้องการจัดการ!");
+
+            if (type === 'BAN') {
+                // คำสั่ง DELETE เพื่อลบออกจาก Firebase จริงๆ
+                if(confirm(`คุณต้องการแบน (ลบ) คีย์ ${key} ใช่หรือไม่?`)) {
+                    fetch(`${API_BASE}/${key}.json`, { method: 'DELETE' })
+                    .then(() => {
+                        alert("แบนคีย์เรียบร้อย!");
+                        document.getElementById('manageKeyInput').value = "";
+                        fetchKeys();
+                    });
+                }
+            } else if (type === 'RESET') {
+                // คำสั่ง PATCH เพื่อแก้ไขข้อมูล HWID ให้เป็น none
+                if(confirm(`รีเซ็ต HWID สำหรับคีย์ ${key}?`)) {
+                    const resetData = { hwid: "none", status: "unused" };
+                    fetch(`${API_BASE}/${key}.json`, {
+                        method: 'PATCH',
+                        body: JSON.stringify(resetData)
+                    })
+                    .then(() => {
+                        alert("รีเซ็ตค่า HWID สำเร็จ! คีย์นี้ใช้กับเครื่องอื่นได้แล้ว");
+                        fetchKeys();
+                    });
+                }
+            }
+        }
+
+        function copyKey() {
+            navigator.clipboard.writeText(document.getElementById('keyDisplay').innerText);
+            alert("คัดลอกรหัสแล้ว!");
+        }
+    </script>
+</body>
+</html>
